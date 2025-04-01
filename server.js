@@ -70,3 +70,30 @@ app.delete('/api/tasks/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// filepath: d:\Web Development\Projects\mern-todo-app\client\src\App.js
+const BASE_URL = 'http://localhost:5000';
+
+useEffect(() => {
+  axios.get(`${BASE_URL}/api/tasks`).then((response) => setTasks(response.data));
+}, []);
+
+const addTask = () => {
+  axios.post(`${BASE_URL}/api/tasks`, { title: newTask, completed: false }).then((response) => {
+    setTasks([...tasks, response.data]);
+    setNewTask('');
+  });
+};
+
+const toggleTask = (id) => {
+  axios.put(`${BASE_URL}/api/tasks/${id}`, { completed: !tasks.find(task => task._id === id).completed })
+    .then((response) => {
+      setTasks(tasks.map((task) => (task._id === id ? response.data : task)));
+    });
+};
+
+const deleteTask = (id) => {
+  axios.delete(`${BASE_URL}/api/tasks/${id}`).then(() => {
+    setTasks(tasks.filter((task) => task._id !== id));
+  });
+};
